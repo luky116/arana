@@ -126,12 +126,10 @@ var (
 						listenerConf.SocketAddress.Address,
 						listenerConf.SocketAddress.Port))
 				}
-				// todo 这里好像是bug？
-				// listener.SetExecutor(executor)
-				listener.SetExecutor(executors[conf.Listeners[0].Executor])
+				listener.SetExecutor(executor)
 				propeller.AddListener(listener)
-				propeller.Start()
 			}
+			propeller.Start()
 		},
 	}
 )
