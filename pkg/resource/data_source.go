@@ -38,6 +38,7 @@ type DataSourceManager struct {
 	metaResourcePool   map[string]*pools.ResourcePool
 }
 
+// factory 返回一个连接MySQL服务的对象
 func InitDataSourceManager(dataSources []*config.DataSource, factory func(config json.RawMessage) pools.Factory) {
 	masterResourcePool := make(map[string]*pools.ResourcePool, 0)
 	slaveResourcePool := make(map[string]*pools.ResourcePool, 0)

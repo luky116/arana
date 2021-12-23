@@ -62,8 +62,10 @@ var (
 		Short: "start arana",
 
 		Run: func(cmd *cobra.Command, args []string) {
+			// configPath 指向了 docker/config.yaml 文件
 			conf := config.Load(configPath)
 
+			// 解析过滤器（目前尚未配置过滤器）
 			for _, filterConf := range conf.Filters {
 				factory := filter.GetFilterFactory(filterConf.Name)
 				if factory == nil {
@@ -76,6 +78,7 @@ var (
 				filter.RegisterFilter(f.GetName(), f)
 			}
 
+			// 解析执行器
 			executors := make(map[string]proto.Executor)
 			for _, executorConf := range conf.Executors {
 				executor := executor.NewRedirectExecutor(executorConf)
@@ -97,16 +100,21 @@ var (
 				executors[executorConf.Name] = executor
 			}
 
+			// 初始化数据库连接
 			resource.InitDataSourceManager(conf.DataSources, func(config json.RawMessage) pools.Factory {
+				// config 为 confg/dsn 信息
+				// 解析MySQL配置信息，得到Connector对象
 				collector, err := mysql.NewConnector(config)
 				if err != nil {
 					panic(err)
 				}
 				return collector.NewBackendConnection
 			})
+			//todo 这是什么东西？？？
 			propeller := server.NewServer()
 
 			for _, listenerConf := range conf.Listeners {
+				// 初始化监听器，监听来自外部的请求
 				listener, err := mysql.NewListener(listenerConf)
 				if err != nil {
 					panic(err)
@@ -118,6 +126,8 @@ var (
 						listenerConf.SocketAddress.Address,
 						listenerConf.SocketAddress.Port))
 				}
+				// todo 这里好像是bug？
+				// listener.SetExecutor(executor)
 				listener.SetExecutor(executors[conf.Listeners[0].Executor])
 				propeller.AddListener(listener)
 				propeller.Start()

@@ -444,6 +444,7 @@ func NewConnector(config json.RawMessage) (*Connector, error) {
 		log.Errorf("unmarshal mysql Listener config failed, %s", err)
 		return nil, err
 	}
+	// 真正解析MySQL的连接信息，包括host、port、username、db、password、编码方式等等
 	cfg, err := ParseDSN(v.DSN)
 	if err != nil {
 		return nil, err
@@ -453,6 +454,7 @@ func NewConnector(config json.RawMessage) (*Connector, error) {
 
 func (c *Connector) NewBackendConnection(ctx context.Context) (pools.Resource, error) {
 	conn := &BackendConnection{conf: c.conf}
+	// 本地启动TCP的监听MySQL的端口服务
 	err := conn.connect()
 	return conn, err
 }
@@ -491,6 +493,8 @@ func (conn *BackendConnection) connect() error {
 	} else {
 		typ = conn.conf.Net
 	}
+	// conn.conf.Addr：127.0.0.1:3306
+	// 这里连接MySQL服务器
 	netConn, err := net.Dial(typ, conn.conf.Addr)
 	if err != nil {
 		return err

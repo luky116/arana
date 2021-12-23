@@ -105,6 +105,7 @@ func NewListener(conf *config.Listener) (proto.Listener, error) {
 		return nil, err
 	}
 
+	// 监听端口和请求
 	l, err := net.Listen("tcp", fmt.Sprintf("%s:%d", conf.SocketAddress.Address, conf.SocketAddress.Port))
 	if err != nil {
 		log.Errorf("listen %s:%d error, %s", conf.SocketAddress.Address, conf.SocketAddress.Port, err)
