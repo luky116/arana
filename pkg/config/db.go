@@ -119,8 +119,8 @@ type (
 		Name            string    `yaml:"name" json:"name"`
 		AllowFullScan   bool      `yaml:"allowFullScan" json:"allowFullScan,omitempty"`
 		ActualDataNodes []string  `yaml:"actualDataNodes" json:"actualDataNodes"`
-		DbRules         []Rule    `yaml:"dbRules" json:"dbRules"`
-		TblRules        []Rule    `yaml:"tblRules" json:"tblRules"`
+		DbRules         []*Rule    `yaml:"dbRules" json:"dbRules"`
+		TblRules        []*Rule    `yaml:"tblRules" json:"tblRules"`
 		TblProps        *TblProps `yaml:"otherProps" json:"otherProps,omitempty"`
 		Topology        Topology  `yaml:"topology" json:"topology"`
 		ShadowTopology  Topology  `yaml:"shadowTopology" json:"shadowTopology"`
